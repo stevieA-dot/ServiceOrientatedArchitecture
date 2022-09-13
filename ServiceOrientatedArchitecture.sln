@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authenticator", "ServiceOrientatedArchitecture\Authenticator.csproj", "{A7E3C2B1-44FC-4170-B04B-BB36207C419F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegisteredUsersLibrary", "RegisteredUsersLibrary\RegisteredUsersLibrary.csproj", "{34559C72-2825-495D-8402-6ADC9462D723}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7E3C2B1-44FC-4170-B04B-BB36207C419F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E3C2B1-44FC-4170-B04B-BB36207C419F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E3C2B1-44FC-4170-B04B-BB36207C419F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E3C2B1-44FC-4170-B04B-BB36207C419F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34559C72-2825-495D-8402-6ADC9462D723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34559C72-2825-495D-8402-6ADC9462D723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34559C72-2825-495D-8402-6ADC9462D723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34559C72-2825-495D-8402-6ADC9462D723}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6AF0B2B2-3E7D-45C6-92EF-64886411D652}
+	EndGlobalSection
+EndGlobal
