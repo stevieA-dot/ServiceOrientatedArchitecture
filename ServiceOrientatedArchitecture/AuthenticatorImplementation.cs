@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-using RegisteredUsers;
+using static ServiceOrientatedArchitecture.DataLayer;
 
 namespace Authenticator
 {

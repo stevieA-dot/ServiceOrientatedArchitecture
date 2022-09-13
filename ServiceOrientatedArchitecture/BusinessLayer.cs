@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using CsvHelper;
 
-using RegisteredUsers;
+using static ServiceOrientatedArchitecture.DataLayer;
 
 namespace Authenticator
 {

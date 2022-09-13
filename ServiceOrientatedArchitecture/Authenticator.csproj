@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="AuthenticatorImplementation.cs" />
     <Compile Include="BusinessLayer.cs" />
+    <Compile Include="DataLayer.cs" />
     <Compile Include="IAuthenticator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,12 +80,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RegisteredUsersLibrary\RegisteredUsersLibrary.csproj">
-      <Project>{34559C72-2825-495D-8402-6ADC9462D723}</Project>
-      <Name>RegisteredUsersLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
