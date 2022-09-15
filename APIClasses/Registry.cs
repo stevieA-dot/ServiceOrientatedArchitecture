@@ -15,7 +15,7 @@ namespace APIClasses
             public string Name;
             public string Description;
             public string APIEndpoint;
-            public string NumOfOperands;
+            public int NumOfOperands;
             public string OperandType;
 
             
