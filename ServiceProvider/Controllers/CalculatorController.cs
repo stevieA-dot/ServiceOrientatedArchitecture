@@ -15,6 +15,8 @@ namespace ServiceProvider.Controllers
         public DataTable AddTwoNumbers(int token, [FromBody] TwoNums numbers)
         {
             DataTable dt = new DataTable();
+            dt.Columns.Add("Status");
+            dt.Columns.Add("Reason");
 
             if (BusinessLayer.Authenticate(token))
             {
@@ -24,10 +26,9 @@ namespace ServiceProvider.Controllers
             }
             else
             {
-                dt.Columns.Add("Status");
-                dt.Columns.Add("Reason");
                 dt.Rows.Add(_status, _reason);
             }
+            
             return dt;
         }
 
@@ -35,6 +36,8 @@ namespace ServiceProvider.Controllers
         public DataTable AddThreeNumbers( int token, [FromBody] ThreeNums numbers)
         {
             DataTable dt = new DataTable();
+            dt.Columns.Add("Status");
+            dt.Columns.Add("Reason");
 
             if (BusinessLayer.Authenticate(token))
             {
@@ -44,8 +47,6 @@ namespace ServiceProvider.Controllers
             }
             else
             {
-                dt.Columns.Add("Status");
-                dt.Columns.Add("Reason");
                 dt.Rows.Add(_status, _reason);
             }
             return dt;
@@ -55,6 +56,8 @@ namespace ServiceProvider.Controllers
         public DataTable MulTwoNumbers(int token, [FromBody] TwoNums numbers)
         {
             DataTable dt = new DataTable();
+            dt.Columns.Add("Status");
+            dt.Columns.Add("Reason");
 
             if (BusinessLayer.Authenticate(token))
             {
@@ -64,8 +67,6 @@ namespace ServiceProvider.Controllers
             }
             else
             {
-                dt.Columns.Add("Status");
-                dt.Columns.Add("Reason");
                 dt.Rows.Add(_status, _reason);
             }
             return dt;
@@ -75,6 +76,8 @@ namespace ServiceProvider.Controllers
         public DataTable MulThreeNumnbers(int token, [FromBody] ThreeNums numbers)
         {
             DataTable dt = new DataTable();
+            dt.Columns.Add("Status");
+            dt.Columns.Add("Reason");
 
             if (BusinessLayer.Authenticate(token))
             {
@@ -84,8 +87,6 @@ namespace ServiceProvider.Controllers
             }
             else
             {
-                dt.Columns.Add("Status");
-                dt.Columns.Add("Reason");
                 dt.Rows.Add(_status, _reason);
             }
             return dt;
