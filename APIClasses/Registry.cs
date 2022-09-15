@@ -17,11 +17,23 @@ namespace APIClasses
             public string APIEndpoint;
             public string NumOfOperands;
             public string OperandType;
+
+            
+            public override string ToString()
+            {
+                return $"{Name} \n{Description} \n{APIEndpoint} \n{NumOfOperands} \n{OperandType}";
+            }
         }
 
         public class SearchData
         {
             public string SearchStr;
+
+            public override string ToString()
+            {
+                return SearchStr;
+            }
+
         }
 
         public sealed class EndpointDataMap : ClassMap<EndpointData>
