@@ -68,13 +68,14 @@ namespace Registry
             return endpoints;
         }
 
-        public static void RemoveEndPoint(EndpointData endpoint)
+        public static bool RemoveEndPoint(EndpointData endpoint)
         {
             var endpoints = ReturnAllServices();
+            EndpointData foundEndpoint = null;
 
             if (endpoints.Count != 0)
             {
-                var foundEndpoint = endpoints.Where(e => e.Name == endpoint.Name).FirstOrDefault();
+                foundEndpoint = endpoints.Where(e => e.Name.ToLower() == endpoint.Name.ToLower()).FirstOrDefault();
 
                 if (foundEndpoint != null)
                 {
@@ -90,6 +91,7 @@ namespace Registry
                     }
                 }
             }
+            return foundEndpoint != null;
         }
 
         public static List<EndpointData> FindEndpointWithSearchTerm(SearchData data)

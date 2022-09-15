@@ -10,7 +10,7 @@ using static APIClasses.Registry;
 
 namespace Registry.Controllers
 {
-    [RoutePrefix("api/Registry")]
+    [RoutePrefix("registry")]
     public class ValuesController : ApiController
     {
         private const string _status = "Denied";
@@ -78,8 +78,6 @@ namespace Registry.Controllers
         public DataTable AllServices(int token)
         {
             DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
 
             if (BusinessLayer.Authenticate(token))
             {
@@ -107,6 +105,8 @@ namespace Registry.Controllers
             }
             else
             {
+                dt.Columns.Add("Status");
+                dt.Columns.Add("Reason");
                 dt.Rows.Add(_status, _reason);
             }
 
