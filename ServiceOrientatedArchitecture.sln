@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIClasses", "APIClasses\AP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Registry", "Registry\Registry.csproj", "{F01FF9DE-D6ED-4DD1-9342-3815362E4536}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicePublishing", "ServicePublishing\ServicePublishing.csproj", "{8B0369D5-8676-442B-945B-B8C659879C97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{8A2ED256-4BFA-495A-900A-EB7785739A2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{F01FF9DE-D6ED-4DD1-9342-3815362E4536}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F01FF9DE-D6ED-4DD1-9342-3815362E4536}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F01FF9DE-D6ED-4DD1-9342-3815362E4536}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B0369D5-8676-442B-945B-B8C659879C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B0369D5-8676-442B-945B-B8C659879C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B0369D5-8676-442B-945B-B8C659879C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B0369D5-8676-442B-945B-B8C659879C97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A2ED256-4BFA-495A-900A-EB7785739A2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A2ED256-4BFA-495A-900A-EB7785739A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A2ED256-4BFA-495A-900A-EB7785739A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A2ED256-4BFA-495A-900A-EB7785739A2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
