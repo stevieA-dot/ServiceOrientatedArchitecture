@@ -57,10 +57,11 @@ namespace Authenticator
             return token;
         }
 
-        public void Register(string username, string password)
+        public string Register(string username, string password)
         {
             // adds registered user into the db
             User user = BusinessLayer.ReadUserFromFile(username, password);
+            string succesful = null;
 
             if (user == null)
             {
@@ -68,7 +69,13 @@ namespace Authenticator
                 user.username = username;
                 user.password = password;
                 BusinessLayer.WriteUserToFile(user);
+                succesful = "successfully registered";
             }
+            else
+            {
+                succesful = "unsuccessful registration";
+            }
+            return succesful;
         }
 
         public bool Validate(int token)

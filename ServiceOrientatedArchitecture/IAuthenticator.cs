@@ -7,7 +7,7 @@ namespace Authenticator
     public interface IAuthenticator
     {
         [OperationContract]
-        void Register(string username, string password);
+        string Register(string username, string password);
 
         [OperationContract]
         int Login(string username, string password);
