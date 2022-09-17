@@ -18,6 +18,14 @@ namespace APIClasses
             public int NumOfOperands;
             public string OperandType;
 
+            public EndpointData()
+            {
+                Name = "";
+                Description = "";
+                APIEndpoint = "";
+                NumOfOperands = 0;
+                OperandType = "";
+            }
             
             public override string ToString()
             {

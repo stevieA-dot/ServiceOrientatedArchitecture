@@ -8,13 +8,8 @@ namespace APIClasses
 {
     public class ServiceProvider
     {
-        public class TwoNums
-        {
-            public int NumOne;
-            public int NumTwo;
-        }
 
-        public class ThreeNums
+        public class Numbers
         {
             public int NumOne;
             public int NumTwo;
