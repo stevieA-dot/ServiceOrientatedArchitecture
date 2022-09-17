@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
+using Newtonsoft.Json.Linq;
+
 using static APIClasses.Registry;
 
 namespace ServicePublishing
@@ -15,10 +17,7 @@ namespace ServicePublishing
         static async Task Main(string[] args)
         {
 
-
-            RegisterGUI();
-            LoginGui();
-            
+            LoginOrRegister();
 
             string option = null;
             while (option != "e")
@@ -29,8 +28,11 @@ namespace ServicePublishing
                 switch (option)
                 {
                     case "p":
-                        EndpointData endpoint = PublishGUI();
-                        ValidateEndpoint(endpoint);
+                        EndpointData endpoint = null;
+                        while (endpoint == null || !ValidateEndpoint(endpoint).Result)
+                        {
+                            endpoint = PublishGUI();
+                        }
                         if (await Publish(endpoint))
                         {
                             Console.WriteLine("Token has expired. Please login again.");
@@ -43,15 +45,24 @@ namespace ServicePublishing
                         break;
                     case "u":
                         SearchData searchData = UnpublishGUI();
-                        if (await Unpublish(searchData))
+
+                        try
                         {
-                            Console.WriteLine("Token has expired. Please login again.");
-                            LoginGui();
+                            if (!await Unpublish(searchData))
+                            {
+                                Console.WriteLine("Search term wasn't found and the endpoint was not deleted.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"{searchData} has been unpublished");
+                            }
                         }
-                        else
+                        catch(Exception e)
                         {
-                            Console.WriteLine($"{searchData} has been unpublished");
+                            Console.WriteLine(e.Message);
+
                         }
+                        
                         break;
                         default:
                         Console.WriteLine($"Option {option} does not exist");
@@ -60,10 +71,35 @@ namespace ServicePublishing
             }
         }
 
+        private static void LoginOrRegister()
+        {
+            string loginOrRegister = "";
+
+            while (loginOrRegister != "l" && loginOrRegister != "r")
+            {
+                Console.WriteLine("Would you like to (l)ogin or (r)egister?");
+                {
+                    loginOrRegister = Console.ReadLine();
+
+                    switch (loginOrRegister)
+                    {
+                        case "l":
+                            LoginGui();
+                            break;
+                        case "r":
+                            RegisterGUI();
+                            break;
+                        default:
+                            Console.WriteLine("Please enter l for login or r for register");
+                            break;
+                    }
+                }
+            }
+        }
         private static EndpointData PublishGUI()
         {
             EndpointData endpoint = new EndpointData();
-            while (BusinessLayer.CheckForNullData(endpoint))
+            while (BusinessLayer.IsDataNull(endpoint))
             {
                 Console.WriteLine("Lets publish a service! Please enter the name of the service");
                 endpoint.Name = Console.ReadLine();
@@ -80,7 +116,7 @@ namespace ServicePublishing
                     endpoint.OperandType = Console.ReadLine();
                 }
 
-                while (endpoint.NumOfOperands > 3 && endpoint.NumOfOperands < 2)
+                while (endpoint.NumOfOperands > 3 || endpoint.NumOfOperands < 2)
                 {
                     Console.WriteLine("Enter number of operands. Options are 2 or 3. Must be a whole number.");
                     Int32.TryParse(Console.ReadLine(), out endpoint.NumOfOperands);
@@ -91,13 +127,28 @@ namespace ServicePublishing
             return endpoint;
         }
 
-        private async static void ValidateEndpoint(EndpointData endpoint)
+        private async static Task<bool> ValidateEndpoint(EndpointData endpoint)
         {
-            if (!await BusinessLayer.ValidateAPIEndpoint(token, endpoint))
+            bool validEndpoint = false;
+            try
             {
-                MessageBox.Show("Endpoint does not exist, please try again");
-                PublishGUI();
+                if (!await BusinessLayer.ValidateAPIEndpoint(token, endpoint))
+                {
+                    Console.WriteLine("Endpoint does not exist, please try again");
+                    PublishGUI();
+                }
+                else
+                {
+                    Console.WriteLine("Endpoint was valid. Thank you");
+                    validEndpoint = true;
+                }
             }
+            catch(Exception e)
+            {
+                Console.WriteLine($"There was an error with your API endpoint : {e.Message}");
+            }
+
+            return validEndpoint;
         }
         private async static Task<bool> Publish(EndpointData endpoint)
         {
@@ -141,7 +192,7 @@ namespace ServicePublishing
             }
             else
             {
-                Console.WriteLine("That username and password didn't work. Please try again");
+                Console.WriteLine("That username and password already exist. Please try again");
                 RegisterGUI();
             }
             

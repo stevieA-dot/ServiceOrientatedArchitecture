@@ -9,9 +9,12 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 
+using APIClasses;
+
 using Authenticator;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using RestSharp;
 
@@ -52,8 +55,15 @@ namespace ServicePublishing
             {
                 return token;
             }
-
-            return DataLayer.Login(username, password);
+            try
+            {
+                token = DataLayer.Login(username, password);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+            return token;
         }
 
         public static async Task<bool> Publish(int token, EndpointData endpoint)
@@ -67,8 +77,7 @@ namespace ServicePublishing
             {
                 // deserialize data
                 // get whether token is valid
-                dt = JsonConvert.DeserializeObject<DataTable>(resp.Content);
-                tokenExpired = dt.AsDataView().Find("Status").ToString() == "Denied";
+
             }
             else
             {
@@ -80,43 +89,41 @@ namespace ServicePublishing
 
         public async static Task<bool> Unpublish(int token, SearchData search)
         {
-            // given the name of a service
-            // will attempt to delete that service
-            // if it is not successful
-            // will return false
+            bool unpublished = false;
+            RestResponse resp = null;
 
-            DataTable dt = null;
-            bool tokenExpired = false;
-
-            RestResponse resp = await DataLayer.Unpublish(token, search);
-            if (resp.IsSuccessful)
+            resp = await DataLayer.Unpublish(token, search);
+            if (resp != null)
             {
-                dt = JsonConvert.DeserializeObject<DataTable>(resp.Content);
-                tokenExpired = dt.AsDataView().Find("Status").ToString() == "Denied";
-            }
-            else
-            {
-                throw new Exception(resp.ErrorMessage);
+                if (resp.StatusCode == HttpStatusCode.OK)
+                {
+                    unpublished = JsonConvert.DeserializeObject<bool>(resp.Content);
+                }
+                else
+                {
+                    throw new Exception(resp.ErrorMessage);
+                }
             }
 
-            return tokenExpired;
+            return unpublished;
         }
 
-        public static bool CheckForNullData (EndpointData endpoint)
+        public static bool IsDataNull (EndpointData endpoint)
         {
             if (string.IsNullOrEmpty(endpoint.Name)
                 || string.IsNullOrEmpty(endpoint.Description)
                 || string.IsNullOrEmpty(endpoint.APIEndpoint)
                 || string.IsNullOrEmpty(endpoint.OperandType))
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         public async static Task<bool> ValidateAPIEndpoint(int token, EndpointData endpoint)
         {
-            ThreeNums numbers = new ThreeNums();
+            Numbers numbers = new Numbers();
+            RestResponse resp = null;
             numbers.NumOne = 1;
             numbers.NumTwo = 2;
 
@@ -125,10 +132,17 @@ namespace ServicePublishing
                 numbers.NumThree = 3;
             }
 
-            RestClient client = new RestClient(endpoint.APIEndpoint);
-            RestRequest req = new RestRequest($"/{token}");
-            req.AddJsonBody(JsonConvert.SerializeObject(numbers));
-            RestResponse resp = await client.PostAsync(req);
+            try
+            {
+                RestClient client = new RestClient(endpoint.APIEndpoint);
+                RestRequest req = new RestRequest($"/{token}");
+                req.AddJsonBody(JsonConvert.SerializeObject(numbers));
+                resp = await client.PostAsync(req);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
 
             return resp.IsSuccessful;
         }

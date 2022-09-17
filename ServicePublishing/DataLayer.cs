@@ -41,8 +41,16 @@ namespace ServicePublishing
 
         public async static Task<RestResponse> Unpublish(int token, SearchData searchData)
         {
-            RestRequest req = new RestRequest($"unpublish/{token}/{searchData}");
-            return await _client.GetAsync(req);
+            try
+            {
+                RestRequest req = new RestRequest($"registry/unpublish/{token}/{searchData}");
+                return await _client.DeleteAsync(req);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+            
         }
     }
 }
