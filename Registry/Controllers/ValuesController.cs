@@ -4,7 +4,12 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Web.Http;
+
+using APIClasses;
+
+using Newtonsoft.Json.Linq;
 
 using static APIClasses.Registry;
 
@@ -13,123 +18,100 @@ namespace Registry.Controllers
     [RoutePrefix("registry")]
     public class ValuesController : ApiController
     {
-        private const string _status = "Denied";
-        private const string _reason = "Authentication Error";
+        private ServerStatus serverStat = new ServerStatus();
 
         [Route("publish/{token}/{endpointData}")]
-        public DataTable Publish(int token, [FromBody] EndpointData endpointData)
+        public void Publish(int token, [FromBody] EndpointData endpointData)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
-
-            if (BusinessLayer.Authenticate(token))
+            try
             {
-                BusinessLayer.WriteEndPointToFile(endpointData);
+                if (BusinessLayer.Authenticate(token))
+                {
+                    BusinessLayer.WriteEndPointToFile(endpointData);
+                }
+                else
+                {
+                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
+                }
             }
-            else
+            catch(Exception e)
             {
-                dt.Rows.Add(_status, _reason);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
-
-            return dt;
         }
 
         [Route("search/{token}/{searchData}")]
-        public DataTable Search(int token, [FromBody] SearchData searchData)
+        public List<EndpointData> Search(int token, [FromBody] SearchData searchData)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
+            List<EndpointData> endpoints = new List<EndpointData>();
 
-            if (BusinessLayer.Authenticate(token))
+            try
             {
-                List<EndpointData> endpoints = BusinessLayer.FindEndpointWithSearchTerm(searchData);
-
-                if (endpoints.Count() != 0)
+                if (BusinessLayer.Authenticate(token))
                 {
-                    dt.Columns.Add("Name");
-                    dt.Columns.Add("Description");
-                    dt.Columns.Add("APIEndpoint");
-                    dt.Columns.Add("NumOfOperands");
-                    dt.Columns.Add("OperandType");
-
-                    foreach (var endpoint in endpoints)
-                    {
-                        dt.Rows.Add(
-                            endpoint.Name,
-                            endpoint.Description,
-                            endpoint.APIEndpoint,
-                            endpoint.NumOfOperands,
-                            endpoint.OperandType);
-                    }
+                    endpoints = BusinessLayer.FindEndpointWithSearchTerm(searchData);
                 }
-                
+                else
+                {
+                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
+                }
             }
-            else
+            catch(Exception e)
             {
-                dt.Rows.Add(_status, _reason);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
 
-            return dt;
+            return endpoints;
         }
 
         [Route("allServices/{token}")]
-        public DataTable AllServices(int token)
+        public List<EndpointData> AllServices(int token)
         {
-            DataTable dt = new DataTable();
+            List<EndpointData> endpoints = new List<EndpointData>();
 
-            if (BusinessLayer.Authenticate(token))
+            try
             {
-                List<EndpointData> endpoints = BusinessLayer.ReturnAllServices();
-
-                if (endpoints.Count() != 0)
+                if (BusinessLayer.Authenticate(token))
                 {
-                    dt.Columns.Add("Name");
-                    dt.Columns.Add("Description");
-                    dt.Columns.Add("APIEndpoint");
-                    dt.Columns.Add("NumOfOperands");
-                    dt.Columns.Add("OperandType");
-
-                    foreach (var endpoint in endpoints)
-                    {
-                        dt.Rows.Add(
-                            endpoint.Name,
-                            endpoint.Description,
-                            endpoint.APIEndpoint,
-                            endpoint.NumOfOperands,
-                            endpoint.OperandType);
-                    }
+                    endpoints = BusinessLayer.ReturnAllServices();
                 }
-                
+                else
+                {
+                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
+                }
             }
-            else
+            catch(Exception e)
             {
-                dt.Columns.Add("Status");
-                dt.Columns.Add("Reason");
-                dt.Rows.Add(_status, _reason);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
 
-            return dt;
+            return endpoints;
         }
 
         [Route("unpublish/{token}/{endpoint}")]
-        public DataTable Unpublish(int token, [FromBody] EndpointData endpoint)
+        [HttpDelete]
+        public bool Unpublish(int token, [FromBody] EndpointData endpoint)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
+            bool endpointDeleted = false;
 
-            if (BusinessLayer.Authenticate(token))
+            try
             {
-                BusinessLayer.RemoveEndPoint(endpoint);
+                if (BusinessLayer.Authenticate(token))
+                {
+                    endpointDeleted = BusinessLayer.RemoveEndPoint(endpoint);
+                }
+                else
+                { 
+
+                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
+                }
             }
-            else
+            catch (Exception e)
             {
-                dt.Rows.Add(_status, _reason);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
 
-            return dt;
+            return endpointDeleted;
         }
     }
 }

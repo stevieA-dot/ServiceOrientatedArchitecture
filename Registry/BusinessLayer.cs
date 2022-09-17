@@ -20,49 +20,74 @@ namespace Registry
 
         public static bool Authenticate(int token)
         {
-            NetTcpBinding tcp = new NetTcpBinding();
-            string url = "net.tcp://localhost:8100/Authenticator";
-            ChannelFactory<IAuthenticator> authServerFactory = new ChannelFactory<IAuthenticator>(tcp, url);
-            IAuthenticator authServer = authServerFactory.CreateChannel();
+            bool valid = false;
 
-            return authServer.Validate(token);
+            try
+            {
+                NetTcpBinding tcp = new NetTcpBinding();
+                string url = "net.tcp://localhost:8100/Authenticator";
+                ChannelFactory<IAuthenticator> authServerFactory = new ChannelFactory<IAuthenticator>(tcp, url);
+                IAuthenticator authServer = authServerFactory.CreateChannel();
+
+                valid = authServer.Validate(token);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
+            return valid;
         }
         public static void WriteEndPointToFile(EndpointData data)
         {
-            if (!File.Exists(_fileName))
+            try
             {
-                using (var writer = new StreamWriter(_fileName))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                if (!File.Exists(_fileName))
                 {
-                    csv.Context.RegisterClassMap<EndpointDataMap>();
-                    csv.WriteHeader<EndpointData>();
-                    csv.NextRecord();
-                    csv.WriteRecord(data);
+                    using (var writer = new StreamWriter(_fileName))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.Context.RegisterClassMap<EndpointDataMap>();
+                        csv.WriteHeader<EndpointData>();
+                        csv.NextRecord();
+                        csv.WriteRecord(data);
+                    }
+                }
+                else
+                {
+                    using (var writer = new StreamWriter(_fileName, true))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.Context.RegisterClassMap<EndpointDataMap>();
+                        csv.NextRecord();
+                        csv.WriteRecord(data);
+                    }
                 }
             }
-            else
+            catch(Exception e)
             {
-                using (var writer = new StreamWriter(_fileName, true))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                {
-                    csv.Context.RegisterClassMap<EndpointDataMap>();
-                    csv.NextRecord();
-                    csv.WriteRecord(data);
-                }
+                throw e;
             }
         }
 
         public static List<EndpointData> ReturnAllServices()
         {
             List<EndpointData> endpoints = new List<EndpointData>();
-            if (File.Exists(_fileName))
+            try
             {
-                using (var reader = new StreamReader(_fileName))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                if (File.Exists(_fileName))
                 {
-                    csv.Context.RegisterClassMap<EndpointDataMap>();
-                    endpoints = csv.GetRecords<EndpointData>().ToList();
+                    using (var reader = new StreamReader(_fileName))
+                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        csv.Context.RegisterClassMap<EndpointDataMap>();
+                        endpoints = csv.GetRecords<EndpointData>().ToList();
+                    }
                 }
+            }
+            catch(Exception e)
+            {
+                throw e;
             }
 
             return endpoints;
@@ -73,35 +98,50 @@ namespace Registry
             var endpoints = ReturnAllServices();
             EndpointData foundEndpoint = null;
 
-            if (endpoints.Count != 0)
+            try
             {
-                foundEndpoint = endpoints.Where(e => e.Name.ToLower() == endpoint.Name.ToLower()).FirstOrDefault();
-
-                if (foundEndpoint != null)
+                if (endpoints.Count != 0)
                 {
-                    endpoints.Remove(foundEndpoint);
+                    foundEndpoint = endpoints.Where(e => e.Name.ToLower() == endpoint.Name.ToLower()).FirstOrDefault();
 
-                    using (var writer = new StreamWriter(_fileName))
-                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    if (foundEndpoint != null)
                     {
-                        csv.Context.RegisterClassMap<EndpointDataMap>();
-                        csv.WriteHeader<EndpointData>();
-                        csv.NextRecord();
-                        csv.WriteRecords(endpoints);
+                        endpoints.Remove(foundEndpoint);
+
+                        using (var writer = new StreamWriter(_fileName))
+                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                        {
+                            csv.Context.RegisterClassMap<EndpointDataMap>();
+                            csv.WriteHeader<EndpointData>();
+                            csv.NextRecord();
+                            csv.WriteRecords(endpoints);
+                        }
                     }
                 }
             }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
             return foundEndpoint != null;
         }
 
         public static List<EndpointData> FindEndpointWithSearchTerm(SearchData data)
         {
-            var endpoints = ReturnAllServices();
-            List<EndpointData> result = new List<EndpointData>();
-
-            if (endpoints.Count != 0)
+            try
             {
-                result = endpoints.Where(e => e.APIEndpoint.Contains(data.SearchStr)).ToList();
+                var endpoints = ReturnAllServices();
+                List<EndpointData> result = new List<EndpointData>();
+
+                if (endpoints.Count != 0)
+                {
+                    result = endpoints.Where(e => e.APIEndpoint.ToLower().Contains(data.SearchStr.ToLower())).ToList();
+                }
+            }
+            catch(Exception e)
+            {
+                throw e;
             }
 
             return result;
