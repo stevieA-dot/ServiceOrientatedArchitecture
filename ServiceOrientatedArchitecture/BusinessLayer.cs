@@ -58,7 +58,7 @@ namespace Authenticator
             }
         }
 
-        public static Token ReadTokenFromFile(int token)
+        public static int ReadTokenFromFile(int token)
         {
             Token foundToken = null;
 
@@ -73,7 +73,7 @@ namespace Authenticator
                     foundToken = tokens.Where(t => t.token == token).FirstOrDefault();
                 }
             }
-            return foundToken;
+            return foundToken == null ? 0 : foundToken.token;
         }
 
         public static void WriteTokenToFile(int token)

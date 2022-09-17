@@ -49,7 +49,7 @@ namespace Authenticator
                 {
                     token = rand.Next(1, 1000);
 
-                    foundToken = BusinessLayer.ReadTokenFromFile(token).token;
+                    foundToken = BusinessLayer.ReadTokenFromFile(token);
                 }
 
                 BusinessLayer.WriteTokenToFile(token);
@@ -73,7 +73,7 @@ namespace Authenticator
             }
             else
             {
-                succesful = "unsuccessful registration";
+                succesful = "unsuccessful register";
             }
             return succesful;
         }
@@ -81,7 +81,7 @@ namespace Authenticator
         public bool Validate(int token)
         {
             //checks with the db to see if the token is valid
-            return BusinessLayer.ReadTokenFromFile(token) != null;
+            return BusinessLayer.ReadTokenFromFile(token) != 0;
         }
 
         public void ClearTokens()

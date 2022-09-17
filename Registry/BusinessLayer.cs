@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Web;
+using System.Windows;
 
 using Authenticator;
 
@@ -33,7 +34,7 @@ namespace Registry
             }
             catch(Exception e)
             {
-                throw e;
+                MessageBox.Show($"Error processing the request: {e.Message}");
             }
 
             return valid;
@@ -129,6 +130,7 @@ namespace Registry
 
         public static List<EndpointData> FindEndpointWithSearchTerm(SearchData data)
         {
+            List<EndpointData> foundEndpoints = new List<EndpointData>();
             try
             {
                 var endpoints = ReturnAllServices();
@@ -136,7 +138,7 @@ namespace Registry
 
                 if (endpoints.Count != 0)
                 {
-                    result = endpoints.Where(e => e.APIEndpoint.ToLower().Contains(data.SearchStr.ToLower())).ToList();
+                    foundEndpoints = endpoints.Where(e => e.APIEndpoint.ToLower().Contains(data.SearchStr.ToLower())).ToList();
                 }
             }
             catch(Exception e)
@@ -144,7 +146,7 @@ namespace Registry
                 throw e;
             }
 
-            return result;
+            return foundEndpoints;
         }
 
 

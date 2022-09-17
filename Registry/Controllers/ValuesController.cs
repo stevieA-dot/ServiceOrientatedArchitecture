@@ -68,21 +68,15 @@ namespace Registry.Controllers
         public List<EndpointData> AllServices(int token)
         {
             List<EndpointData> endpoints = new List<EndpointData>();
-
-            try
+            
+            if (BusinessLayer.Authenticate(token))
             {
-                if (BusinessLayer.Authenticate(token))
-                {
-                    endpoints = BusinessLayer.ReturnAllServices();
-                }
-                else
-                {
-                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
-                }
+                endpoints = BusinessLayer.ReturnAllServices();
             }
-            catch(Exception e)
+            else
             {
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
 
             return endpoints;
@@ -92,26 +86,16 @@ namespace Registry.Controllers
         [HttpDelete]
         public bool Unpublish(int token, [FromBody] EndpointData endpoint)
         {
-            bool endpointDeleted = false;
 
-            try
+            if (BusinessLayer.Authenticate(token))
             {
-                if (BusinessLayer.Authenticate(token))
-                {
-                    endpointDeleted = BusinessLayer.RemoveEndPoint(endpoint);
-                }
-                else
-                { 
-
-                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
-                }
+                return BusinessLayer.RemoveEndPoint(endpoint);
             }
-            catch (Exception e)
+            else
             {
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
-
-            return endpointDeleted;
         }
     }
 }
