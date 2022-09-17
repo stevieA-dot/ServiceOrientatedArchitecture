@@ -1,95 +1,87 @@
 ﻿using System.Data;
+using System.Net.Http;
+using System.Net;
 using System.Web.Http;
+
+using APIClasses;
+
+using Newtonsoft.Json.Linq;
 
 using static APIClasses.ServiceProvider;
 
 namespace ServiceProvider.Controllers
 {
-    [RoutePrefix("api/Calculator")]
+    [RoutePrefix("calculator")]
     public class CalculatorController : ApiController
     {
-        private const string _status = "Denied";
-        private const string _reason = "Authentication Error";
+        ServerStatus serverStat = new ServerStatus();
 
-        [Route("addTwoNumbers/{token}/{numbers}")]
-        public DataTable AddTwoNumbers(int token, [FromBody] TwoNums numbers)
+        [Route("addTwoNumbers/{token}")]
+        public int AddTwoNumbers(int token, [FromBody] Numbers numbers)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
-
+            int result = 0;
             if (BusinessLayer.Authenticate(token))
             {
-                int result = numbers.NumOne + numbers.NumTwo;
-                dt.Columns.Add("Result");
-                dt.Rows.Add(result);
+                result = numbers.NumOne + numbers.NumTwo;
             }
             else
             {
-                dt.Rows.Add(_status, _reason);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
             
-            return dt;
+            return result;
         }
 
-        [Route("addThreeNumbers/{token}/{numbers}")]
-        public DataTable AddThreeNumbers( int token, [FromBody] ThreeNums numbers)
+        [Route("addThreeNumbers/{token}")]
+        public int AddThreeNumbers( int token, [FromBody] Numbers numbers)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
+            int result = 0;
 
             if (BusinessLayer.Authenticate(token))
             {
-                int result = numbers.NumOne + numbers.NumTwo + numbers.NumThree;
-                dt.Columns.Add("Result");
-                dt.Rows.Add(result);
+                result = numbers.NumOne + numbers.NumTwo + numbers.NumThree;
             }
             else
             {
-                dt.Rows.Add(_status, _reason);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
-            return dt;
+            return result;
         }
 
-        [Route("mulTwoNumbers/{token}/{numbers}")]
-        public DataTable MulTwoNumbers(int token, [FromBody] TwoNums numbers)
+        [Route("mulTwoNumbers/{token}")]
+        public int MulTwoNumbers(int token, [FromBody] Numbers numbers)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
+            int result = 0;
 
             if (BusinessLayer.Authenticate(token))
             {
-                int result = numbers.NumOne * numbers.NumTwo;
-                dt.Columns.Add("Result");
-                dt.Rows.Add(result);
+                result = numbers.NumOne * numbers.NumTwo;
             }
             else
             {
-                dt.Rows.Add(_status, _reason);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
-            return dt;
+            return result;
         }
 
-        [Route("mulThreeNumbers/{token}/{numbers")]
-        public DataTable MulThreeNumnbers(int token, [FromBody] ThreeNums numbers)
+        [Route("mulThreeNumbers/{token}")]
+        public int MulThreeNumnbers(int token, [FromBody] Numbers numbers)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status");
-            dt.Columns.Add("Reason");
+            int result = 0;
 
             if (BusinessLayer.Authenticate(token))
             {
-                int result = numbers.NumOne * numbers.NumTwo * numbers.NumThree;
-                dt.Columns.Add("Result");
-                dt.Rows.Add(result);
+                result = numbers.NumOne * numbers.NumTwo * numbers.NumThree;
             }
             else
             {
-                dt.Rows.Add(_status, _reason);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
-            return dt;
+            return result;
         }
 
 
