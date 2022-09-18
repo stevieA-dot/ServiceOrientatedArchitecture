@@ -14,13 +14,15 @@ namespace Authenticator
 {
     internal class BusinessLayer
     {
+        private static string _usersFilePath = AppDomain.CurrentDomain.BaseDirectory + "users.txt";
+        private static string _tokensFilePath = AppDomain.CurrentDomain.BaseDirectory + "tokens.txt";
         public static User ReadUserFromFile(string username, string password)
         {
             User foundUser = null;
 
-            if (File.Exists("users.txt"))
+            if (File.Exists(_usersFilePath))
             {
-                using (var reader = new StreamReader("users.txt"))
+                using (var reader = new StreamReader(_usersFilePath))
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<UserMap>();
@@ -35,9 +37,9 @@ namespace Authenticator
 
         public static void WriteUserToFile(User user)
         {
-            if (!File.Exists("users.txt"))
+            if (!File.Exists(_usersFilePath))
             {
-                using (var writer = new StreamWriter("users.txt"))
+                using (var writer = new StreamWriter(_usersFilePath))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<UserMap>();
@@ -48,7 +50,7 @@ namespace Authenticator
             }
             else
             {
-                using (var writer = new StreamWriter("users.txt", true))
+                using (var writer = new StreamWriter(_usersFilePath, true))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<UserMap>();
@@ -62,9 +64,9 @@ namespace Authenticator
         {
             Token foundToken = null;
 
-            if (File.Exists("tokens.txt"))
+            if (File.Exists(_tokensFilePath))
             {
-                using (var reader = new StreamReader("tokens.txt"))
+                using (var reader = new StreamReader(_tokensFilePath))
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<TokenMap>();
@@ -81,9 +83,9 @@ namespace Authenticator
             Token newToken = new Token();
             newToken.token = token;
 
-            if (!File.Exists("tokens.txt"))
+            if (!File.Exists(_tokensFilePath))
             {
-                using (var writer = new StreamWriter("tokens.txt"))
+                using (var writer = new StreamWriter(_tokensFilePath))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<TokenMap>();
@@ -94,7 +96,7 @@ namespace Authenticator
             }
             else
             {
-                using (var writer = new StreamWriter("tokens.txt", true))
+                using (var writer = new StreamWriter(_tokensFilePath, true))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<TokenMap>();
@@ -106,9 +108,9 @@ namespace Authenticator
 
         public static void ClearTokens()
         {
-            if (File.Exists("tokens.txt"))
+            if (File.Exists(_tokensFilePath))
             {
-                File.Delete("tokens.txt");
+                File.Delete(_tokensFilePath);
             }
         }
     }
