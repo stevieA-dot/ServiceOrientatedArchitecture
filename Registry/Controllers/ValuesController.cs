@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Web.Http;
 
 using APIClasses;
-
-using Newtonsoft.Json.Linq;
 
 using static APIClasses.Registry;
 
@@ -20,51 +14,40 @@ namespace Registry.Controllers
     {
         private ServerStatus serverStat = new ServerStatus();
 
-        [Route("publish/{token}/{endpointData}")]
+        [Route("publish/{token}")]
         public void Publish(int token, [FromBody] EndpointData endpointData)
         {
-            try
+            if (BusinessLayer.Authenticate(token))
             {
-                if (BusinessLayer.Authenticate(token))
-                {
-                    BusinessLayer.WriteEndPointToFile(endpointData);
-                }
-                else
-                {
-                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
-                }
+                BusinessLayer.WriteEndPointToFile(endpointData);
             }
-            catch(Exception e)
+            else
             {
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
         }
 
-        [Route("search/{token}/{searchData}")]
+        [Route("search/{token}")]
         public List<EndpointData> Search(int token, [FromBody] SearchData searchData)
         {
             List<EndpointData> endpoints = new List<EndpointData>();
 
-            try
+            if (BusinessLayer.Authenticate(token))
             {
-                if (BusinessLayer.Authenticate(token))
-                {
-                    endpoints = BusinessLayer.FindEndpointWithSearchTerm(searchData);
-                }
-                else
-                {
-                    Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat);
-                }
+                endpoints = BusinessLayer.FindEndpointWithSearchTerm(searchData);
             }
-            catch(Exception e)
+            else
             {
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                HttpResponseException exp = new HttpResponseException(Request.CreateResponse(HttpStatusCode.Unauthorized, serverStat));
+                throw exp;
             }
 
             return endpoints;
         }
 
         [Route("allServices/{token}")]
+        [HttpGet]
         public List<EndpointData> AllServices(int token)
         {
             List<EndpointData> endpoints = new List<EndpointData>();
@@ -82,7 +65,7 @@ namespace Registry.Controllers
             return endpoints;
         }
 
-        [Route("unpublish/{token}/{endpoint}")]
+        [Route("unpublish/{token}")]
         [HttpDelete]
         public bool Unpublish(int token, [FromBody] EndpointData endpoint)
         {
