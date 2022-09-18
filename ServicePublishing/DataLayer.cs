@@ -34,9 +34,18 @@ namespace ServicePublishing
 
         public async static Task<RestResponse> Publish(int token, EndpointData endpointData)
         {
-            RestRequest req = new RestRequest($"registry/publish/{token}");
-            req.AddJsonBody(JsonConvert.SerializeObject(endpointData));
-            return await _client.PostAsync(req);
+            RestResponse resp = null;
+            try
+            {
+                RestRequest req = new RestRequest($"registry/publish/{token}");
+                req.AddJsonBody(JsonConvert.SerializeObject(endpointData));
+                resp = await _client.PostAsync(req);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return resp;
         }
 
         public async static Task<RestResponse> Unpublish(int token, SearchData searchData)
