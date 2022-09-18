@@ -17,7 +17,7 @@ namespace Registry
 {
     public class BusinessLayer
     {
-        private const string _fileName = "apiEndpoints.txt";
+        private static string _fileName = AppDomain.CurrentDomain.BaseDirectory + "apiEndpoints.txt";
 
         public static bool Authenticate(int token)
         {
@@ -138,7 +138,7 @@ namespace Registry
 
                 if (endpoints.Count != 0)
                 {
-                    foundEndpoints = endpoints.Where(e => e.APIEndpoint.ToLower().Contains(data.SearchStr.ToLower())).ToList();
+                    foundEndpoints = endpoints.Where(e => e.Description.ToLower().Contains(data.SearchStr.ToLower())).ToList();
                 }
             }
             catch(Exception e)
